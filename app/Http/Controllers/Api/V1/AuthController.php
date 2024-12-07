@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\UnauthorizedException;
 use Symfony\Component\HttpFoundation\Response as ResponseCode;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
@@ -22,6 +23,8 @@ class AuthController extends Controller
 
         if (!password_verify($requests['password'], $user->password))
             throw new UnauthorizedException('Invalid credentials');
+
+        auth()->login($user);
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
@@ -45,6 +48,8 @@ class AuthController extends Controller
 
         $user = User::query()->create($requests);
 
+        auth()->login($user);
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         $payload = [
@@ -59,13 +64,13 @@ class AuthController extends Controller
         );
     }
 
-    public function get(): void
+    public function get(): JsonResponse
     {
         $payload = [
             'user' => auth()->user()
         ];
 
-        $this->successResponse(
+        return $this->successResponse(
             message: 'User details',
             data: $payload
         );
