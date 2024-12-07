@@ -72,7 +72,7 @@ return Application::configure(basePath: dirname(__DIR__))
         );
 
         $exceptions->render(
-            fn(Throwable $e) => response()->json([
+            fn(Exception $e) => response()->json([
                 'message' => $e->getMessage() ?? "Internal Server Error",
                 'data' => null,
                 'errors' => null
