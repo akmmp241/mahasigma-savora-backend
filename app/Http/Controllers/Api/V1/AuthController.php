@@ -78,7 +78,7 @@ class AuthController extends Controller
 
     public function logout(): JsonResponse
     {
-        User::query()->first(
+        User::query()->find(
             auth()->id()
         )->tokens()->delete();
 
