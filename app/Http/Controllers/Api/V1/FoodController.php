@@ -17,13 +17,12 @@ class FoodController extends Controller
         if ($search = $request->query('search'))
             $query->where('name', 'like', '%' . $search . '%');
 
-        if ($limit = $request->query('limit'))
-            $query->limit($limit);
+        if ($perPage = $request->query('limit'))
 
         if ($category = $request->query('category'))
             $query->where('category_id', $category);
 
-        $foods = $query->paginate(10);
+        $foods = $query->paginate($perPage ?? 10);
 
         if ($foods->isEmpty())
             throw new NotFoundHttpException('Foods not found.');
