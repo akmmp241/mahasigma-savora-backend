@@ -1,0 +1,35 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches: [ staging ]
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy to EC2
+        env:
+          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
+          HOST: ${{ secrets.EC2_HOST }}
+          USER: ${{ secrets.EC2_USER }}
+          PROJECT_DIR: ${{ secrets.PROJECT_PATH }}
+        run: |
+          echo "$PRIVATE_KEY" > github-ec2.pem && chmod 600 github-ec2.pem
+          ssh -o StrictHostKeyChecking=no -i github-ec2.pem ${USER}@${HOST} '
+          echo "Current directory: $(pwd)"
+          echo "Listing home directory:"
+          ls -la ~
+          
+          cd ${PROJECT_DIR}
+          git checkout staging
+          git pull origin staging
+          composer install
+          
+          sudo systemctl restart nginx.service
+          sudo systemctl status nginx.service
+          '
