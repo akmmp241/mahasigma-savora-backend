@@ -25,8 +25,8 @@ jobs:
           echo "Listing home directory:"
           ls -la ~
           
-          echo "Move to project directory ${PROJECT_DIR}"
-          cd ${PROJECT_DIR}
+          echo "Move to project directory $PROJECT_DIR"
+          cd $PROJECT_DIR
           echo "Current directory: $(pwd)"
           git checkout staging
           git pull origin staging
