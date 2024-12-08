@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Food extends Model
 {
+    protected $table = 'foods';
     protected $fillable = [
         'vendor_id',
         'category_id',
